@@ -7,6 +7,7 @@ library(wordcloud)
 library(ggplot2)
 library(dplyr)
 library(irlba)
+library(stringr)
 load_user_ht_matrix <- function(edgelist_path){
   cat('constructing graph')
   h_edges=fread(edgelist_path,stringsAsFactors=FALSE,colClasses = c("character","character","integer"))

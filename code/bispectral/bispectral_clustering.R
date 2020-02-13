@@ -77,6 +77,28 @@ rm(user_ht)
 save.image( file.path(OUTPUT_DIRECTORY,"final_clustering.rdata"))
           
 
+# Code for assessing appropriate cluster size
+# Sensitivity
+library(aricode)
+
+res <- list()
+for(k in 50:300){
+  r <- biSpectralCoCluster(he_13,min_user = 10, k = k)
+  res[[k]] <- c(r[['users']]$topic_cluster, r[['hashtags']]$topic_cluster)
+}
+
+rd <- data.frame()
+for(k in 60:300){
+  for(i in 1:10){
+    rd <- rbind(rd, data.frame(k=k,i=i, nmi=NMI(res[[k]],res[[k-i]])))
+  }
+}
+rd <- data.table(rd)
+theme_set(theme_bw(20))
+p <- ggplot(rd[, mean(nmi), by=k], aes(k, V1)) + geom_point() + geom_line() + stat_smooth()
+p <- p + xlab("Number of Clusters") + ylab("Mean\nNormalized Mutual\nInformation (NMI)")
+p
+
 
 
 
